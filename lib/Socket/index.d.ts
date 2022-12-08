@@ -3,8 +3,9 @@
 import { UserFacingSocketConfig } from '../Types';
 declare const makeWASocket: (config: UserFacingSocketConfig) => {
     getOrderDetails: (orderId: string, tokenBase64: string) => Promise<import("../Types").OrderDetails>;
-    getCatalog: (jid?: string | undefined, limit?: number) => Promise<{
+    getCatalog: ({ jid, limit, cursor }: import("../Types").GetCatalogOptions) => Promise<{
         products: import("../Types").Product[];
+        nextPageCursor: string | undefined;
     }>;
     getCollections: (jid?: string | undefined, limit?: number) => Promise<{
         collections: import("../Types").CatalogCollection[];

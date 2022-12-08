@@ -1,10 +1,12 @@
 /// <reference types="ws" />
 /// <reference types="node" />
-import { ProductCreate, ProductUpdate, SocketConfig } from '../Types';
+import { GetCatalogOptions, ProductCreate, ProductUpdate, SocketConfig } from '../Types';
+import { BinaryNode } from '../WABinary';
 export declare const makeBusinessSocket: (config: SocketConfig) => {
     getOrderDetails: (orderId: string, tokenBase64: string) => Promise<import("../Types").OrderDetails>;
-    getCatalog: (jid?: string, limit?: number) => Promise<{
+    getCatalog: ({ jid, limit, cursor }: GetCatalogOptions) => Promise<{
         products: import("../Types").Product[];
+        nextPageCursor: string | undefined;
     }>;
     getCollections: (jid?: string, limit?: number) => Promise<{
         collections: import("../Types").CatalogCollection[];
@@ -14,10 +16,10 @@ export declare const makeBusinessSocket: (config: SocketConfig) => {
         deleted: number;
     }>;
     productUpdate: (productId: string, update: ProductUpdate) => Promise<import("../Types").Product>;
-    sendMessageAck: ({ tag, attrs }: import("../WABinary").BinaryNode) => Promise<void>;
-    sendRetryRequest: (node: import("../WABinary").BinaryNode, forceIncludeKeys?: boolean) => Promise<void>;
+    sendMessageAck: ({ tag, attrs }: BinaryNode) => Promise<void>;
+    sendRetryRequest: (node: BinaryNode, forceIncludeKeys?: boolean) => Promise<void>;
     rejectCall: (callId: string, callFrom: string) => Promise<void>;
-    getPrivacyTokens: (jids: string[]) => Promise<import("../WABinary").BinaryNode>;
+    getPrivacyTokens: (jids: string[]) => Promise<BinaryNode>;
     assertSessions: (jids: string[], force: boolean) => Promise<boolean>;
     relayMessage: (jid: string, message: import("../Types").WAProto.IMessage, { messageId: msgId, participant, additionalAttributes, useUserDevicesCache, cachedGroupMetadata }: import("../Types").MessageRelayOptions) => Promise<string>;
     sendReceipt: (jid: string, participant: string | undefined, messageIds: string[], type: import("../Types").MessageReceiptType) => Promise<void>;
@@ -88,11 +90,11 @@ export declare const makeBusinessSocket: (config: SocketConfig) => {
     };
     user: import("../Types").Contact | undefined;
     generateMessageTag: () => string;
-    query: (node: import("../WABinary").BinaryNode, timeoutMs?: number | undefined) => Promise<import("../WABinary").BinaryNode>;
+    query: (node: BinaryNode, timeoutMs?: number | undefined) => Promise<BinaryNode>;
     waitForMessage: (msgId: string, timeoutMs?: number | undefined) => Promise<any>;
     waitForSocketOpen: () => Promise<void>;
     sendRawMessage: (data: Buffer | Uint8Array) => Promise<void>;
-    sendNode: (frame: import("../WABinary").BinaryNode) => Promise<void>;
+    sendNode: (frame: BinaryNode) => Promise<void>;
     logout: (msg?: string | undefined) => Promise<void>;
     end: (error: Error | undefined) => void;
     onUnexpectedError: (error: Error, msg: string) => void;
